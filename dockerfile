@@ -1,15 +1,12 @@
-FROM alpine:latest
+FROM golang:1.19-bullseye
 
-RUN apk update && \
-    apk add --no-cache curl bind-tools dcron && \
-    rm -rf /var/cache/apk/*
+RUN mkdir -p /app
+WORKDIR /app
 
-COPY dnsupdate.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/dnsupdate.sh
+ADD . /app
 
-# Add the cron job
-RUN echo "*/1 * * * * /usr/local/bin/dnsupdate.sh" >> /etc/crontabs/root && \
-    chmod 0644 /etc/crontabs/root
+ENV GO111MODULE=on
 
-CMD ["/usr/sbin/crond", "-f", "-l", "2", "-L", "/dev/stdout"]
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./dnsupdate /app/dnsupdate.go
 
+CMD ["/app/dnsupdate"]
