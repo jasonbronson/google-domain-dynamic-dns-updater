@@ -9,3 +9,5 @@ $USERNAME
 $PASSWORD
 
 Domain is the full dynamic dns name. You get user/pass from google's domain ui. 
+
+Container image can be found at https://hub.docker.com/r/jbronson29/google-dynamic-dns-updater
